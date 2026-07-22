@@ -17,6 +17,15 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
+        ], [
+            'email.unique' => 'البريد الإلكتروني مسجل مسبقاً.',
+            'email.required' => 'البريد الإلكتروني مطلوب.',
+            'email.email' => 'صيغة البريد الإلكتروني غير صحيحة.',
+            'password.required' => 'كلمة المرور مطلوبة.',
+            'password.min' => 'كلمة المرور يجب أن تتكون من 8 أحرف على الأقل.',
+            'password.confirmed' => 'كلمة المرور وتأكيد كلمة المرور غير متطابقين.',
+            'business_name.required' => 'اسم النشاط التجاري مطلوب.',
+            'name.required' => 'اسم المدير مطلوب.'
         ]);
 
         $business = Business::create([
@@ -44,13 +53,17 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
+        ], [
+            'email.required' => 'البريد الإلكتروني مطلوب.',
+            'email.email' => 'صيغة البريد الإلكتروني غير صحيحة.',
+            'password.required' => 'كلمة المرور مطلوبة.',
         ]);
 
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
+                'email' => ['بيانات الدخول غير صحيحة.'],
             ]);
         }
 
